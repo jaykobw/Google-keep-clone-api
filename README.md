@@ -4,7 +4,7 @@
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Start the app in development mode (error reporting, etc.)
 
 ```bash
 npm run dev
@@ -28,10 +28,3 @@ npm run lint
 npm run format
 ```
 
-### Build the app for production
-
-```bash
-tsc
-# or
-npx tsc
-```
