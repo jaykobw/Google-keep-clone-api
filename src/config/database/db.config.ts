@@ -37,8 +37,9 @@ const initializeDBConnection = async (): Promise<void> => {
     await useSequelizeConnection.sync({ force: false, alter: true });
     logger.info('Database connected succesfully!');
   } catch (e: unknown) {
-    logger.info(`Failed to sync database connection with error : ${e}`);
-    console.error(e);
+    logger.info(
+      `Failed to sync database connection with error : ${(e as any)?.message}`,
+    );
   }
 };
 
