@@ -20,7 +20,7 @@ export default class NoteController {
   }
 
   /**
-   * Get single note item by ID
+   * Get single note by ID
    * @param req Express.request
    * @param res Express.response
    * @param next Express.nextFunction
@@ -38,7 +38,7 @@ export default class NoteController {
   }
 
   /**
-   * Create new note item
+   * Create new note
    * @param req Express.request
    * @param res Express.response
    * @param next Express.nextFunction
@@ -56,7 +56,7 @@ export default class NoteController {
   }
 
   /**
-   * Update single note item by ID
+   * Update note by ID
    * @param req Express.request
    * @param res Express.response
    * @param next Express.nextFunction
@@ -74,7 +74,7 @@ export default class NoteController {
   }
 
   /**
-   * Destroy single note item by ID
+   * Destroy note by ID
    * @param req Express.request
    * @param res Express.response
    * @param next Express.nextFunction
