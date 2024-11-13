@@ -47,6 +47,7 @@ export class Note extends Model {
   })
   content!: string;
 
+  @Default('#ffffff')
   @Column({
     type: DataType.STRING(100),
     allowNull: true,
