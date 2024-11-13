@@ -1,4 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import { Label } from '../models/Label';
+import AppError from '../utils/ErrorHelper';
+import { labelSchema } from '../validators/LabelValidation';
+import joiValidationOptions from '../validators/ValidationConfig';
+import { ILabel } from '../types/Label';
 
 export default class LabelController {
   /**
@@ -13,9 +18,24 @@ export default class LabelController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
+    const userId = (req as Record<string, any>)?.user?.id;
+
+    const allLabels = await Label.findAll({
+      attributes: {
+        exclude: ['userId', 'createdAt', 'updatedAt'],
+      },
+      where: {
+        userId,
+      },
+    });
+
+    if (!allLabels) {
+      return next(new AppError('An internal error occured', 400));
+    }
+
     return res.status(200).json({
       status: 'success',
-      data: [],
+      data: allLabels,
     });
   }
 
@@ -31,9 +51,26 @@ export default class LabelController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
+    const userId = (req as Record<string, any>)?.user?.id;
+    const labelId = req.params?.id;
+
+    const labelItem = await Label.findOne({
+      attributes: {
+        exclude: ['userId', 'createdAt', 'updatedAt'],
+      },
+      where: {
+        id: labelId,
+        userId: userId,
+      },
+    });
+
+    if (!labelItem) {
+      return next(new AppError('Label not found', 400));
+    }
+
     return res.status(200).json({
       status: 'success',
-      data: [],
+      data: labelItem,
     });
   }
 
@@ -49,9 +86,26 @@ export default class LabelController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
-    return res.status(200).json({
+    const userId = (req as Record<string, any>)?.user?.id;
+
+    const labelValidation = labelSchema.validate(
+      req.body,
+      joiValidationOptions,
+    );
+
+    if (labelValidation.error) {
+      return next(new AppError(labelValidation.error.message, 400));
+    }
+
+    const newLabel = (await Label.create({ ...req.body, userId })) as ILabel;
+
+    if (!newLabel) {
+      return next(new AppError('Failed to create label', 400));
+    }
+
+    return res.status(201).json({
       status: 'success',
-      data: [],
+      data: newLabel,
     });
   }
 
@@ -67,9 +121,42 @@ export default class LabelController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
+    const labelId = req.params?.id;
+
+    if (!labelId) {
+      return next(new AppError('Label id is required', 400));
+    }
+
+    const labelValidation = labelSchema.validate(
+      req.body,
+      joiValidationOptions,
+    );
+
+    if (labelValidation.error) {
+      return next(new AppError(labelValidation.error.message, 400));
+    }
+
+    const updateLabel = await Label.update(
+      {
+        title: req.body?.title,
+      },
+      {
+        where: {
+          id: labelId,
+        },
+      },
+    );
+
+    if (!updateLabel) {
+      return next(new AppError('Failed to update label', 400));
+    }
+
     return res.status(200).json({
       status: 'success',
-      data: [],
+      message: 'Label update succesfully',
+      data: {
+        title: req.body?.title,
+      },
     });
   }
 
@@ -85,9 +172,25 @@ export default class LabelController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
-    return res.status(200).json({
+    const labelId = req.params?.id;
+
+    if (!labelId) {
+      return next(new AppError('Label id is required', 400));
+    }
+
+    const deleteLabel = await Label.destroy({
+      where: {
+        id: labelId,
+      },
+    });
+
+    if (!deleteLabel) {
+      return next(new AppError('Failed to delete label', 400));
+    }
+
+    return res.status(204).json({
       status: 'success',
-      data: [],
+      message: 'Label delete succesfully',
     });
   }
 }
