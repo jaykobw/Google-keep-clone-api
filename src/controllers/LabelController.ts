@@ -103,9 +103,19 @@ export default class LabelController {
       return next(new AppError('Failed to create label', 400));
     }
 
+    const labelResponse = await Label.findByPk(newLabel.id, {
+      attributes: {
+        exclude: ['userId', 'updatedAt', 'createdAt'],
+      },
+    });
+
+    if (!labelResponse) {
+      return next(new AppError('An internal error occured', 400));
+    }
+
     return res.status(201).json({
       status: 'success',
-      data: newLabel,
+      data: labelResponse,
     });
   }
 

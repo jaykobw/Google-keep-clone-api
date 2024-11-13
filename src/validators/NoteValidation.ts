@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-export const noteValidation = Joi.object({
+export const noteSchema = Joi.object({
   title: Joi.string().min(1).max(255).required(),
   content: Joi.string().optional(),
   labelId: Joi.string().optional(),
