@@ -39,7 +39,7 @@ export default class UserController {
       data: {
         email: user?.email,
         username: user?.username,
-        avatar: `${process.env.APP_URL}/public/images/user/${user?.avatar}`,
+        avatar: `${process.env.APP_URL}/images/user/${user?.avatar}`,
       },
     });
   }
@@ -197,7 +197,7 @@ export default class UserController {
       status: 'success',
       message: 'Avatar updated succesfully',
       data: {
-        avatar: `${process.env.APP_URL}/public/images/user/${req.file?.filename}`,
+        avatar: `${process.env.APP_URL}/images/user/${req.file?.filename}`,
       },
     });
   }

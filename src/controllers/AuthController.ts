@@ -83,7 +83,7 @@ export default class AuthController {
       user: {
         username: user?.username,
         email: user?.email,
-        avatar: `${process.env.APP_URL}/public/images/user/${user?.avatar}`,
+        avatar: `${process.env.APP_URL}/images/user/${user?.avatar}`,
         rfid: jwtRefreshToken,
         token: jwtAccessToken,
       },
