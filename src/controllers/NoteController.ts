@@ -4,6 +4,7 @@ import joiValidationOptions from '../validators/ValidationConfig';
 import AppError from '../utils/ErrorHelper';
 import { Note } from '../models/Note';
 import { INote } from '../types/Note';
+import { Label } from '../models/Label';
 
 export default class NoteController {
   /**
@@ -18,9 +19,31 @@ export default class NoteController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
+    const userId = (req as Record<string, any>)?.user?.id;
+
+    const allNotes = await Note.findAll({
+      attributes: {
+        exclude: ['userId', 'createdAt', 'updatedAt'],
+      },
+      where: {
+        userId,
+      },
+      include: [
+        {
+          model: Label,
+          as: 'label',
+          attributes: ['title'],
+        },
+      ],
+    });
+
+    if (!allNotes) {
+      return next(new AppError('Failed to fetch notes', 400));
+    }
+
     return res.status(200).json({
       status: 'success',
-      data: [],
+      data: allNotes,
     });
   }
 
@@ -36,9 +59,37 @@ export default class NoteController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
+    const userId = (req as Record<string, any>)?.user?.id;
+    const noteId = req.params?.id;
+
+    if (!noteId) {
+      return next(new AppError('Note Id is required', 400));
+    }
+
+    const findNote = await Note.findOne({
+      attributes: {
+        exclude: ['userId', 'createdAt', 'updatedAt'],
+      },
+      include: [
+        {
+          model: Label,
+          as: 'label',
+          attributes: ['title'],
+        },
+      ],
+      where: {
+        id: noteId,
+        userId,
+      },
+    });
+
+    if (!findNote) {
+      return next(new AppError('Failed to find note', 400));
+    }
+
     return res.status(200).json({
       status: 'success',
-      data: [],
+      data: findNote,
     });
   }
 
@@ -68,9 +119,26 @@ export default class NoteController {
       return next(new AppError('Failed to create note', 400));
     }
 
+    const noteResponse = await Note.findByPk(newNote.id, {
+      attributes: {
+        exclude: ['userId', 'isArchived', 'createdAt', 'updatedAt'],
+      },
+      include: [
+        {
+          model: Label,
+          as: 'label',
+          attributes: ['title'],
+        },
+      ],
+    });
+
+    if (!noteResponse) {
+      return next(new AppError('An internal error occured', 400));
+    }
+
     return res.status(201).json({
       status: 'success',
-      data: newNote,
+      data: noteResponse,
     });
   }
 
@@ -104,9 +172,27 @@ export default class NoteController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
+    const userId = (req as Record<string, any>)?.user?.id;
+    const noteId = req.params?.id;
+
+    if (!noteId) {
+      return next(new AppError('Note Id is required', 400));
+    }
+
+    const deleteNote = await Note.destroy({
+      where: {
+        id: noteId,
+        userId,
+      },
+    });
+
+    if (!deleteNote) {
+      return next(new AppError('Failed to delete note', 400));
+    }
+
     return res.status(204).json({
       status: 'success',
-      data: [],
+      message: 'Note deleted succesfully',
     });
   }
 }

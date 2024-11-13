@@ -54,6 +54,7 @@ export class Note extends Model {
   })
   tileColor!: string;
 
+  @Default(false)
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
