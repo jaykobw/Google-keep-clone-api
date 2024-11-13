@@ -136,6 +136,12 @@ export default class LabelController {
       return next(new AppError(labelValidation.error.message, 400));
     }
 
+    const idExists = await Label.findByPk(labelId);
+
+    if (!idExists) {
+      return next(new AppError('Label not found', 400));
+    }
+
     const updateLabel = await Label.update(
       {
         title: req.body?.title,
