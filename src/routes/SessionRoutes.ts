@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import SessionController from '../controllers/SessionController';
-import authMiddleware from '../middleware/AuthMiddleware';
-import asyncHelper from '../utils/AsyncHelper';
+import AuthMiddleware from '../middleware/AuthMiddleware';
+import AsyncHelper from '../utils/AsyncHelper';
 
 const router = Router();
 
-router.use(authMiddleware);
+router.use(AuthMiddleware);
 
-router.get('/', asyncHelper(SessionController.index));
-router.delete('/:id', asyncHelper(SessionController.destory));
+router.get('/', AsyncHelper(SessionController.index));
+router.delete('/:id', AsyncHelper(SessionController.destory));
 
 export default router;
