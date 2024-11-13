@@ -9,6 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { User } from './User';
+import { Label } from './Label';
 
 @Table({
   timestamps: true,
@@ -26,6 +27,13 @@ export class Note extends Model {
     allowNull: false,
   })
   userId!: string;
+
+  @ForeignKey(() => Label)
+  @Column({
+    type: DataType.UUID,
+    allowNull: true,
+  })
+  labelId!: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -53,4 +61,7 @@ export class Note extends Model {
 
   @BelongsTo(() => User)
   user!: User;
+
+  @BelongsTo(() => Label)
+  label!: Label;
 }
