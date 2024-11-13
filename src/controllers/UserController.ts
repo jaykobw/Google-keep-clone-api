@@ -45,40 +45,6 @@ export default class UserController {
   }
 
   /**
-   * Get user by username
-   * @param req Express.Request
-   * @param res Express.Response
-   * @param next Express.NextFunction
-   * @returns {Promise<void | Response<void | Record<string, any>>>}
-   */
-  static async getUserByUsername(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void | Response<void | Record<string, any>>> {
-    const username = req.params?.username;
-
-    const user = await User.findOne({
-      where: {
-        username,
-      },
-    });
-
-    if (!user) {
-      return next(new AppError('User not found', 400));
-    }
-
-    return res.status(200).json({
-      status: 'success',
-      data: {
-        email: user?.email,
-        username: user?.username,
-        avatar: `${process.env.APP_URL}/public/images/user/${user?.avatar}`,
-      },
-    });
-  }
-
-  /**
    * Update username
    * @param req Express.Request
    * @param res Express.Response

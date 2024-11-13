@@ -9,7 +9,6 @@ const router = Router();
 router.use(authMiddleware);
 
 router.get('/me', AsyncHelper(UserController.getUser));
-router.get('/:username', AsyncHelper(UserController.getUserByUsername));
 router.patch('/update-username', AsyncHelper(UserController.updateUsername));
 router.patch('/update-password', AsyncHelper(UserController.updatePassword));
 
