@@ -154,9 +154,36 @@ export default class NoteController {
     res: Response,
     next: NextFunction,
   ): Promise<void | Response<void | Record<string, any>>> {
+    const noteId = req.params?.id;
+
+    if (!noteId) {
+      return next(new AppError('Note Id is required', 400));
+    }
+
+    const noteValidation = noteSchema.validate(req.body, joiValidationOptions);
+
+    if (noteValidation.error) {
+      return next(new AppError(noteValidation.error.message, 400));
+    }
+
+    const updateNote = await Note.update(
+      {
+        ...req.body,
+      },
+      {
+        where: {
+          id: noteId,
+        },
+      },
+    );
+
+    if (!updateNote) {
+      return next(new AppError('Failed to update note', 400));
+    }
+
     return res.status(200).json({
       status: 'success',
-      data: [],
+      message: 'Note updated succesfully',
     });
   }
 
