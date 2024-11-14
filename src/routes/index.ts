@@ -4,6 +4,7 @@ import UserRoutes from './UserRoutes';
 import SessionRoutes from './SessionRoutes';
 import LabelRoutes from './LabelRoutes';
 import NoteRoutes from './NoteRoutes';
+import ArchiveRoutes from './ArchiveRoutes';
 
 const RoutesRegister = (app: Express) => {
   app.use('/api/auth/', AuthRoutes);
@@ -11,6 +12,7 @@ const RoutesRegister = (app: Express) => {
   app.use('/api/v1/session', SessionRoutes);
   app.use('/api/v1/note', NoteRoutes);
   app.use('/api/v1/label', LabelRoutes);
+  app.use('/api/v1/archive', ArchiveRoutes);
 };
 
 export default RoutesRegister;
