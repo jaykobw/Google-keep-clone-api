@@ -6,7 +6,7 @@ import LabelRoutes from './LabelRoutes';
 import NoteRoutes from './NoteRoutes';
 import ArchiveRoutes from './ArchiveRoutes';
 
-const RoutesRegister = (app: Express) => {
+const RoutesRegister = (app: Express): void => {
   app.use('/api/auth/', AuthRoutes);
   app.use('/api/v1/user', UserRoutes);
   app.use('/api/v1/session', SessionRoutes);
