@@ -83,10 +83,11 @@ export default class ArchiveController {
     const updateNote = await Note.update(
       {
         isArchived: req.body?.status,
+        updatedAt: Date.now(),
       },
       {
         where: {
-          noteId,
+          id: noteId,
         },
       },
     );
